@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery } from '@apollo/client'
 import {ME, FIND_USER} from '../queries'
+import List from './List'
 
 const DashBoard = ({userId}) => {
 
@@ -11,10 +12,12 @@ const str = userId
   if(loading) return <>loadinggg....</>
   if(error) return <>error is  : {error.message}</>
 
-  console.log("finduser ", data.findUser.username)
+  console.log("finduser ", data.findUser)
   return (
-
-    <div>DashBoard for {data.findUser.username} </div>
+    <>
+    <h1>DashBoard for {data.findUser.username} </h1>
+    {data.findUser.playlists.map((pl)=> <li key={pl} >{pl}</li>)}
+    </>
   )
 }
 

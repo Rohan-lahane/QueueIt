@@ -6,10 +6,11 @@ const playlistSchema = new mongoose.Schema({
     required: true
   },
 
-  user: {
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+
   songs: [
     {
         songtitle: {
@@ -47,4 +48,5 @@ playlistSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Playlist', playlistSchema)
+const Playlist = mongoose.model('Playlist', playlistSchema)
+module.exports = Playlist

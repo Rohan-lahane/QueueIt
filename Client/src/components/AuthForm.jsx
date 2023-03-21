@@ -21,7 +21,7 @@ const LoginForm = ({setToken}) => {
     if ( result.data ) {
       const token = result.data.login.value
       setToken(token)
-      localStorage.setItem('queueit-user-token', token)
+      localStorage.setItem('queueitUserToken', token)
     }
   }, [result.data]) 
 
@@ -68,7 +68,7 @@ const SignUpForm = ({setToken}) => {
     if ( result.data ) {
       const token = result.data.createUser.value
       setToken(token)
-      localStorage.setItem('queueit-user-token', token)
+      localStorage.setItem('queueitUserToken', token)
     }
   }, [result.data]) 
 

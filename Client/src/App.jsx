@@ -5,16 +5,19 @@ import jwtDecode from 'jwt-decode'
 import AuthForm from './components/AuthForm'
 import Browse from './components/Browse'
 import DashBoard from './components/DashBoard'
+import PlaylistForm from './components/PlaylistForm'
 import './styles/App.css'
 import { CREATE_USER, LOGIN , ME} from './queries'
 import { useQuery, useMutation } from '@apollo/client'
 
 
 
+
 function App() {
-  const [token, setToken] = useState(null)
-  // const {loading, error, data} = useQuery(ME)
+  const [token, setToken] = useState('')
   
+  // const {loading, error, data} = useQuery(ME)
+  // console.log('tokennnnn  ', localStorage.queueitUserToken)
   
   
   const logout = () => {
@@ -23,7 +26,14 @@ function App() {
     // client.resetStore()
   }
 
-  if(!token){
+  
+
+  const updatePlayList = (pl) =>
+  {
+    setPlayList([...playList, pl])
+  }
+
+  if(localStorage.length===0){
   return (
 
     <div className="App">
@@ -33,15 +43,18 @@ function App() {
           About us : 
       </div>
       <AuthForm setToken= {setToken}/>
+   
+      <PlaylistForm />
       <Browse/>
-
-      <DashBoard userId={'64165124b2e3ea8dfb85ec3f'}/>
+   
+      
+     
     </div>
 
   )
   }
 
-  const decodedToken = jwtDecode(token)
+  const decodedToken = jwtDecode(localStorage.queueitUserToken)
   console.log("tokenns, ", token,"decoded : ", decodedToken)
 
 return(

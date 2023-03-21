@@ -1,32 +1,22 @@
 import {useState} from 'react'
+import { useQuery } from '@apollo/client'
+import {ALL_PLAYLISTS} from '../queries'
+import List from './List'
+
 
 const Browse = () => {
-    const [search, setSearch] = useState('')
 
-    const submitSearch = async (event) => {
-      event.preventDefault()
-      console.log("Search Submitted: ") 
-    }
+  const {loading, error, data} = useQuery(ALL_PLAYLISTS)
     return (
     <div>
-
-      <form onSubmit={submitSearch}>
-
-          Search Playlists: <input
-            value={search}
-            onChange={({ target }) => setSearch(target.value)}
-      />
-      <button type='submit'> Find </button>
-      </form>
-
-      <div>
-        <h2> All Playlists:  </h2>
-      <li>p1 </li>
-      <li>p2 </li>
-      <li>p3 </li>
-      <li>p4 </li>
-      </div>
-
+   
+      <h2> All Playlists:  </h2>
+      {loading && <>getting playlists</>}
+     {error && <>oops error : {error.message}</>}
+     {data && data.getAllPlaylists.map((pl)=>
+      <List key ={pl.id} title={pl.title} creator ={pl.creator}
+      />)}
+     
     </div>
     )
 }

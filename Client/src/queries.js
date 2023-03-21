@@ -29,11 +29,36 @@ query me
 `
 
 export const FIND_USER = gql`
-query findUser($id: String!)
+query findUser ($id: String!)
 {  
   findUser(id: $id){
-      username
-      id
+      username 
+      playlists  
   }     
+}
+`
+
+export const FIND_PLAYLIST = gql`
+query findPlaylist($title: String!)
+{
+  findPlaylist(title: $title)
+  {
+   id
+   title
+   creator
+   
+  }
+}
+`
+
+export const ALL_PLAYLISTS = gql`
+query getAllPlaylists
+{
+  getAllPlaylists
+  {
+   id
+   title
+   creator
+  }
 }
 `

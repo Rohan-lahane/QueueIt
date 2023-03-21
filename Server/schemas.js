@@ -1,14 +1,16 @@
 
 const typeDefs = `
   type User {
+    _id: ID! 
     username: String!
     passwordHash: String!
-    playlists: [Playlist]
-    id: ID! 
+    playlists: [ID!]!
+    
   },
 
   type Playlist {
     title: String!
+    creator: String!
     description: String
     songs: [Song]
     id: ID!
@@ -25,10 +27,10 @@ const typeDefs = `
   },
 
   type Query {
-    findPlaylist(title: String!): Playlist
+    findPlaylist(title: String!): [Playlist!]!
     findUser(id: String!): User
     me: User!
-    allPlaylists : [Playlist]
+    getAllPlaylists : [Playlist]
   }
 
   type Mutation{

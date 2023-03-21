@@ -1,51 +1,64 @@
-// import { set } from 'mongoose'
-// import React from 'react'
+import { useEffect, useState } from 'react'
+import { ME, FIND_PLAYLIST } from '../queries'
+import { useLazyQuery, useMutation } from '@apollo/client'
 
-// const PlaylistForm = () => {
+import List from './List'
 
-//     const [title, setTitle] = useState('')
-//     // const [password, setPassword] = useState('')
-  
-//     const [ findPlaylist, result ] = useMutation(FIND_PLAYLIST, {
-//       onError: (error) => {
-//         console.log("could not find Playlist: ", error )
-//       }
-//     })
-  
-//     useEffect(() => {
-  
-//       console.log("playlist result data =>",result.data)
-//       if ( result.data ) {
-//         const songs = result.data.findPlaylist.songs
-//         setSongList()
-//       }
-//     }, [result.data]) 
-  
-  
-//     const submitLogin = async (event) => {
-//       event.preventDefault()
-//       console.log("Login submited: ", username, password) 
-//       login({ variables: { username, password } })
-//     }
 
-//   return (
-//     <div> <form onSubmit={submitLogin}>
+
+
+
+const PlaylistForm = () => {
+
+    const [title, setTitle] = useState('')
+    const [playList, setPlayList] = useState([])
+    // const [creator, setCreator] = useState('rohann')
+    const [findPlaylist,{loading, data}] = useLazyQuery(FIND_PLAYLIST, 
+      {onCompleted: (data)=> setPlayList(data.findPlaylist)})
+    
+    
+      const submitSearch = async (event) => {
+      event.preventDefault()
+      console.log("Search submited:", title, typeof(title) ) 
+      findPlaylist({variables: {title}})
+      setTitle('')       
       
-//     username <input
-//       value={username}
-//       onChange={({ target }) => setUsername(target.value)}
-//     />
- 
-  
-//     password <input
-//       type='password'
-//       value={password}
-//       onChange={({ target }) => setPassword(target.value)}
-//     />
-  
-//   <button type='submit'>login</button>
-// </form></div>
-//   )
-// }
+      }
 
-// export default PlaylistForm
+      // useEffect(()=>{
+       
+      // }, [result.data])
+    
+
+  return (
+    <div>
+
+
+      what are you looking for ? 
+    <form onSubmit={submitSearch}>
+      
+    title <input
+      value={title}
+      onChange={({ target }) => setTitle(target.value)}
+    />
+
+    {/* creator <input
+      value={creator}
+      onChange={({ target }) => setCreator(target.value)}
+    />
+   */}
+  <button type='submit'> search </button>
+
+
+</form>
+
+{playList.map((pl)=> <List key={pl.id} title={pl.title} creator ={pl.creator} />)}
+<>thats all the playlists that matched you search, 
+   if that's not what you were looking for, use different keyworkds,
+   or browse from our collection of playlists. 
+</>
+</div>
+  )
+  }
+
+export default PlaylistForm

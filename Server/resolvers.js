@@ -5,19 +5,45 @@ const bcrypt = require('bcrypt')
 const Playlist = require('./models/playlist')
 const User = require('./models/user')
 
+
 const resolvers = {
     Query: {
-      allPlaylists: () => playlists,
-      findPlaylist: (root, args) =>{ 
-        playlists.find(p => p.name === args.name)
-        },
+      getAllPlaylists: async() => 
+      {
+        const playlists = await Playlist.find()
+        console.log("all playlists: ", playlists)
+        return playlists
+      },
+
+      findPlaylist: async  (root, args) =>{ 
+       console.log("findPlaylist args, " , args)
+        try{
+       const playlists = await Playlist.find(
+          {title: {$regex: args.title, $options: 'i' }},
+       )
+
+       console.log("the playlists we found : ",  playlists)
+
+       return playlists
+
+      } catch (error) {
+        throw new Error(' could not get playlist ', {error})
+      }
+        
+      
+      },
 
 
       findUser: async (root, args) =>{
         console.log("find user args ",args)
 
-        const user= await User.findById(args.id)
-        return user
+        const user= await User.findById(args.id).populate('playlists')
+        console.log("found user: ", user)
+        return {
+          id: user._id,
+          username: user.username,
+          playlists: user.playlists.map((playlist)=>playlist._id)
+        }
         // users.find(p => p.name === args.name)
         },
 
@@ -52,7 +78,7 @@ const resolvers = {
                 username: user.username,
                 id: user._id,
               }
-              return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+              return { value: jwt.sign(userForToken, process.env.JWT_SECRET, {expiresIn:600*60}) }
     
           },
 
@@ -75,7 +101,7 @@ const resolvers = {
                 id: user._id,
               }
           
-              return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+              return { value: jwt.sign(userForToken, process.env.JWT_SECRET,{expiresIn:600*60}) }
             },
 
     }
