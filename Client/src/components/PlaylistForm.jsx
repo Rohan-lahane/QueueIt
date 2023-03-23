@@ -52,7 +52,7 @@ const PlaylistForm = () => {
 
 </form>
 
-{playList.map((pl)=> <List key={pl.id} title={pl.title} creator ={pl.creator} />)}
+{playList.map((pl)=> <List key={pl.id} id={pl.id} user={''} />)}
 <>thats all the playlists that matched you search, 
    if that's not what you were looking for, use different keyworkds,
    or browse from our collection of playlists. 

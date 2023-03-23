@@ -14,7 +14,9 @@ const Browse = () => {
       {loading && <>getting playlists</>}
      {error && <>oops error : {error.message}</>}
      {data && data.getAllPlaylists.map((pl)=>
-      <List key ={pl.id} title={pl.title} creator ={pl.creator}
+      <List key ={pl.id} 
+      id = {pl.id}
+      user ={''}
       />)}
      
     </div>

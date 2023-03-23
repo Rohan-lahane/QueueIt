@@ -27,17 +27,24 @@ const typeDefs = `
   },
 
   type Query {
-    findPlaylist(title: String!): [Playlist!]!
+    findPlaylist (title: String!): [Playlist!]!
+    getPlaylistById (var: String!): Playlist!    
     findUser(id: String!): User
     me: User!
     getAllPlaylists : [Playlist]
+
   }
 
   type Mutation{
 
     createUser(username: String!, password: String! ): Token
     login(username: String!, password: String!) : Token
+    addPlaylist(title: String!, creatorId: String!): Playlist
 
+  }
+
+  type Subscription{
+    playlistAdded: Playlist!
   }
 
 `
