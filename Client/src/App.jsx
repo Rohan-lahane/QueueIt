@@ -9,8 +9,8 @@ import PlaylistForm from './components/PlaylistForm'
 import './styles/App.css'
 import { CREATE_USER, LOGIN , ME} from './queries'
 import { useQuery, useMutation } from '@apollo/client'
-
-
+import ReactPlayer from 'react-player'
+import {Spotify} from 'react-spotify-embed'
 
 
 function App() {
@@ -36,7 +36,12 @@ function App() {
   if(localStorage.length===0){
   return (
 
-    <div className="App">
+    
+
+  <div className="App">
+  <div >
+   
+      </div>
       <h1>QueueIt</h1>
       <div className="intro">
           Welcome to QueueIt, All your music, In one place. 
@@ -47,8 +52,6 @@ function App() {
       <PlaylistForm />
       <Browse/>
    
-      
-     
     </div>
 
   )

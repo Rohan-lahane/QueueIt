@@ -18,15 +18,15 @@ const DashBoard = ({userId}) => {
       onCompleted: (data)=> setList(data.findUser.playlists)
     })
 
-  const updateForm=()=>{
-    console.log("update form called, toggling values") 
-    setForm(false)
-  }
+    const updateForm=()=>{
+      console.log("update form called, toggling values") 
+      setForm(false)
+    }
   
   console.log("stringg ", typeof(userId),userId )
   const{loading, error, data} = useQuery(FIND_USER,{ variables: {id : userId} } )
 
-const updateCount=(num)=>
+  const updateCount=(num)=>
   {
   console.log("setting new listusing count : ", num)
   setList(num)
@@ -45,6 +45,9 @@ const updateCount=(num)=>
   console.log("finduser ", data.findUser, "list is noww: \n",list)
   return (
     <>
+
+{/* <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175"  sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/album/did-you-know-that-theres-a-tunnel-under-ocean-blvd/1655349115?i=1655349122"></iframe> */}
+
     <h1>DashBoard for {data.findUser.username} </h1>
    {
     

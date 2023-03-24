@@ -1,6 +1,20 @@
 import {gql} from '@apollo/client'
 
 
+
+const PLAYLIST_DATA = gql`
+fragment PlaylistData on Playlist{
+  title
+  id
+  creator
+  songs {
+    title
+    link
+    platform
+  }
+}
+`
+
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password)  {
@@ -85,6 +99,24 @@ query getPlaylistById($var: String!)
 }
 `
 
+export const ADD_SONG = gql`
+
+mutation addSong($playlistId: String, $title: String, $link: String, $platform: String )
+{
+  addSong(playlistId: $playlistId, title: $title, link: $link, platform: $platform)
+  {
+    
+    title
+    creator
+    songs{
+      title
+      link
+      platform
+    }
+  }
+  
+}
+`
 
 export const ALL_PLAYLISTS = gql`
 query getAllPlaylists
@@ -98,18 +130,7 @@ query getAllPlaylists
 }
 `
 
-const PLAYLIST_DATA = gql`
-fragment PlaylistData on Playlist{
-  title
-  id
-  creator
-  songs {
-    title
-    link
-    platform
-  }
-}
-`
+
 export const PLAYLIST_ADDED =gql`
 subscription{
   playlistAdded{

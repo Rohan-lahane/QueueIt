@@ -135,8 +135,32 @@ const resolvers = {
 
         pubsub.publish('PLAYLIST_ADDED', {playlistAdded: addedPlaylist})
         return addedPlaylist
+      },
+
+      addSong: async(roots, args)=>{
+        console.log("add song args: ", args)
+        const playlist = await Playlist.findById(args.playlistId)
+        if(!playlist){throw new Error('Playlist not found')}
+        
+        const newSong = {
+          title: args.title,
+          link: args.link,
+          platform: args.platform
+        }
+
+        playlist.songs.push(newSong)
+
+        
+        const updatedPlayList = await playlist.save()
+
+        console.log("the playlist is noww: ", updatedPlayList)
+        return updatedPlayList
+
       }
+
     },
+
+
 
     Subscription: {
       playlistAdded: {

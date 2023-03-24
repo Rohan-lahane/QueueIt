@@ -21,10 +21,16 @@ const typeDefs = `
   }
 
   type Song {
-    title: String!
+    title: String
     link: String!
     platform: String! 
   },
+
+  input SongInput{
+    title:String!
+    link: String!
+    platform: String!
+  }
 
   type Query {
     findPlaylist (title: String!): [Playlist!]!
@@ -40,6 +46,7 @@ const typeDefs = `
     createUser(username: String!, password: String! ): Token
     login(username: String!, password: String!) : Token
     addPlaylist(title: String!, creatorId: String!): Playlist
+    addSong(playlistId: String, title: String, link: String, platform: String ): Playlist!
 
   }
 
