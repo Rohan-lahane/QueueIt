@@ -48,7 +48,7 @@ const DashBoard = ({userId}) => {
 
 {/* <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175"  sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/album/did-you-know-that-theres-a-tunnel-under-ocean-blvd/1655349115?i=1655349122"></iframe> */}
 
-    <h1>DashBoard for {data.findUser.username} </h1>
+    <h1>Welcome {data.findUser.username} !</h1>
    {
     
     form ? <div>
@@ -65,8 +65,18 @@ const DashBoard = ({userId}) => {
     :<button onClick={()=>setForm(!form)}>create new </button>
    }
  
-   {
-    list.map((pl)=> <List key={pl} id={pl} user={userId}/>)
+   {list.length&& 
+  //  <div>hi{list[0].title}</div>
+    list.map((pl)=> 
+      // <div key={pl.id}> hi {pl.title}</div>
+    <List key={pl.id} playlist={{
+      ...pl, creator: {
+        _id : pl.creator._id,
+        username: data.findUser.username
+      }
+    }} user={userId}/>
+  
+    )
    }
 
 <PlaylistForm />

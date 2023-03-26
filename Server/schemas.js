@@ -4,13 +4,12 @@ const typeDefs = `
     _id: ID! 
     username: String!
     passwordHash: String!
-    playlists: [ID!]!
-    
+    playlists: [Playlist!]!  
   },
 
   type Playlist {
     title: String!
-    creator: String!
+    creator: User!
     description: String
     songs: [Song]
     id: ID!
@@ -33,8 +32,8 @@ const typeDefs = `
   }
 
   type Query {
-    findPlaylist (title: String!): [Playlist!]!
-    getPlaylistById (var: String!): Playlist!    
+    findPlaylist (title: String!): [Playlist]
+    getPlaylistById (var: String!): Playlist    
     findUser(id: String!): User
     me: User!
     getAllPlaylists : [Playlist]

@@ -7,17 +7,22 @@ import List from './List'
 const Browse = () => {
 
   const {loading, error, data} = useQuery(ALL_PLAYLISTS)
+
+  if(data)
+  {console.log("all playlists data", data)}
     return (
     <div>
    
-      <h2> All Playlists:  </h2>
-      {loading && <>getting playlists</>}
-     {error && <>oops error : {error.message}</>}
-     {data && data.getAllPlaylists.map((pl)=>
+     {loading && <div>getting playlists</div>}
+     {error && <div>oops error : {error.message}</div>}
+     {data && 
+     <div className='playlist-container'> {data.getAllPlaylists.map((pl)=>
       <List key ={pl.id} 
-      id = {pl.id}
+      playlist = {pl}
       user ={''}
       />)}
+      </div>
+      }
      
     </div>
     )

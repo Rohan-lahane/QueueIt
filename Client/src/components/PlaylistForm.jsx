@@ -1,64 +1,53 @@
-import { useEffect, useState } from 'react'
-import { ME, FIND_PLAYLIST } from '../queries'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useEffect, useState } from "react";
+import { ME, FIND_PLAYLIST } from "../queries";
+import { useLazyQuery, useMutation } from "@apollo/client";
 
-import List from './List'
-
-
-
-
+import List from "./List";
+import "../styles/FindPlaylist.css";
 
 const PlaylistForm = () => {
+  const [title, setTitle] = useState("");
+  const [playList, setPlayList] = useState([]);
+  const [clear, setClear] = useState(false);
+  // const [creator, setCreator] = useState('rohann')
+  const [findPlaylist, { loading, data }] = useLazyQuery(FIND_PLAYLIST, {
+    onCompleted: (data) => setPlayList(data.findPlaylist),
+  });
 
-    const [title, setTitle] = useState('')
-    const [playList, setPlayList] = useState([])
-    // const [creator, setCreator] = useState('rohann')
-    const [findPlaylist,{loading, data}] = useLazyQuery(FIND_PLAYLIST, 
-      {onCompleted: (data)=> setPlayList(data.findPlaylist)})
-    
-    
-      const submitSearch = async (event) => {
-      event.preventDefault()
-      console.log("Search submited:", title, typeof(title) ) 
-      findPlaylist({variables: {title}})
-      setTitle('')       
-      
-      }
+  const submitSearch = async (event) => {
+    event.preventDefault();
+    console.log("Search submited:", title, typeof title);
+    findPlaylist({ variables: { title } });
+    setTitle("");
+    setClear(true);
+  };
 
-      // useEffect(()=>{
-       
-      // }, [result.data])
-    
+  const clearSearch = () => {
+    setPlayList([]);
+    setClear(false);
+  };
 
   return (
-    <div>
+    <div className="find-playlist">
+      <form onSubmit={submitSearch}>
+        <input
+          value={title}
+          onChange={({ target }) => setTitle(target.value)}
+          placeholder="Find playlist by title"
+        />
 
+        <button type="submit"> Search </button>
+        {clear && <button onClick={clearSearch}> Clear </button>}
+      </form>
 
-      what are you looking for ? 
-    <form onSubmit={submitSearch}>
-      
-    title <input
-      value={title}
-      onChange={({ target }) => setTitle(target.value)}
-    />
+      <div className="playlist-container">
+        {playList.map((pl) => (
+          <List key={pl.id} playlist={pl} user={""} />
+        ))}
+      </div>
+      <p className={`find-playlist-explore`}>Explore more :</p>
+    </div>
+  );
+};
 
-    {/* creator <input
-      value={creator}
-      onChange={({ target }) => setCreator(target.value)}
-    />
-   */}
-  <button type='submit'> search </button>
-
-
-</form>
-
-{playList.map((pl)=> <List key={pl.id} id={pl.id} user={''} />)}
-<>thats all the playlists that matched you search, 
-   if that's not what you were looking for, use different keyworkds,
-   or browse from our collection of playlists. 
-</>
-</div>
-  )
-  }
-
-export default PlaylistForm
+export default PlaylistForm;

@@ -66,7 +66,18 @@ query findUser ($id: String!)
   findUser(id: $id){
       _id
       username 
-      playlists  
+      playlists{
+        id
+        title
+        creator{
+          _id
+        }
+        songs{
+          title
+          link
+          platform
+        }
+      }
   }     
 }
 `
@@ -76,9 +87,17 @@ query findPlaylist($title: String!)
 {
   findPlaylist(title: $title)
   {
-   id
-   title
-   creator
+    id
+    title
+    creator{
+     _id
+     username
+    }
+    songs{
+     title
+     link
+     platform
+    }
   }
 }
 `
@@ -87,14 +106,18 @@ query getPlaylistById($var: String!)
 {
   getPlaylistById(var: $var)
   {
-   id
+    id
    title
-   creator
+   creator{
+    _id
+    username
+   }
    songs{
     title
     link
     platform
    }
+   
   }
 }
 `
@@ -123,9 +146,18 @@ query getAllPlaylists
 {
   getAllPlaylists
   {
-   id
-   title
-   creator
+    id
+    title
+    creator{
+     _id
+     username
+    }
+    songs{
+     title
+     link
+     platform
+    }
+    
   }
 }
 `

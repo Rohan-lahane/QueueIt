@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import { LOGIN, CREATE_USER } from '../queries'
-
+import '../styles/AuthForm.css'
+import { NoFragmentCyclesRule } from 'graphql'
 
 
 
@@ -32,23 +33,26 @@ const LoginForm = ({setToken}) => {
     login({ variables: { username, password } })
   }
   return (
-    <div>
+    <div className='auth-form'>
     <form onSubmit={submitLogin}>
-      
-      username <input
+      <div>
+      Username <input
         value={username}
         onChange={({ target }) => setUsername(target.value)}
+        placeholder="John Doe"
       />
-   
-    
-      password <input
+      </div>
+      <div>
+      Password <input
         type='password'
         value={password}
         onChange={({ target }) => setPassword(target.value)}
+        placeholder="Password"
       />
-    
-    <button type='submit'>login</button>
-  </form>
+      </div>
+      <button type='submit'>Submit</button>
+
+    </form>
   </div>
   )
 }
@@ -78,22 +82,25 @@ const SignUpForm = ({setToken}) => {
     createUser({variables: {username, password}})
   }
   return (
-    <div>
+    <div className={`auth-form`}>
     <form onSubmit={submitSignUp}>
-      
-        username <input
+    <div>
+        Username <input
           value={username}
           onChange={({ target }) => setUsername(target.value)}
+          placeholder="John Doe"
         />
-     
-      
-        password <input
+     </div>
+     <div>
+        Password <input
           type='password'
           value={password}
           onChange={({ target }) => setPassword(target.value)}
+          placeholder="Password"
         />
+        </div>
       
-      <button type='submit'>SignUp</button>
+      <button type='submit'> Submit </button>
     </form>
   </div>
   )
@@ -101,21 +108,35 @@ const SignUpForm = ({setToken}) => {
 
 const AuthForm = ({setToken}) => {
   const [form, setForm] = useState(true)
-  const handleToggleForm =() => {
+  const[formTransition, setFormTransition] = useState(false)
+  const handleToggleForm = () => {
+    
+    setFormTransition(true)
+   
+     setTimeout(() => {
+      setFormTransition(false)
+    }, 1000)
+
     setForm(!form)
+    
   }
 
   return(
-    <>
-       <h2>{form ? 'Login' : 'Sign Up'}</h2>
+    <div id="auth" className={`auth  `}>
+       <h2 className={`auth-form-transition ${formTransition ? 'show': ''}`} >
+        {form ? 'Sign In' : 'Sign Up'}
+       </h2>
 
-       {form ? <LoginForm setToken={setToken}/> 
-       : <SignUpForm setToken={setToken} />}
 
-       <button onClick={handleToggleForm}>
-        {form? 'switch to sign in': 'swith to login'}
+       {form 
+       ?<LoginForm setToken={setToken}/> 
+       :<SignUpForm setToken={setToken} />
+       }
+
+       <button onClick={handleToggleForm}  >
+        {form? 'Switch to Sign Up': 'Switch to Sign In'}
        </button>
-    </>
+    </div>
   )
 
 }

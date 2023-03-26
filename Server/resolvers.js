@@ -13,7 +13,7 @@ const resolvers = {
     Query: {
       getAllPlaylists: async() => 
       {
-        const playlists = await Playlist.find()
+        const playlists = await Playlist.find().populate('creator')
         console.log("all playlists: ", playlists)
         return playlists
       },
@@ -23,7 +23,7 @@ const resolvers = {
          try{
         const playlists = await Playlist.find(
            {title: {$regex: args.title, $options: 'i' }},
-        )
+        ).populate('creator')
  
         console.log("the playlists we found : ",  playlists)
  
@@ -37,7 +37,7 @@ const resolvers = {
        getPlaylistById: async  (root, args) =>{ 
         console.log("get Playlist by id  args, " , args)
          try{
-        const playlist = await Playlist.findById(args.var)
+        const playlist = await Playlist.findById(args.var).populate('creator')
         console.log("the playlists we found : ",  playlist)
  
         return playlist
@@ -54,11 +54,7 @@ const resolvers = {
         console.log("logged in user context", context)
         const user= await User.findById(args.id).populate('playlists')
         console.log("found user: ", user)
-        return {
-          _id: user._id,
-          username: user.username,
-          playlists: user.playlists.map((playlist)=>playlist._id)
-        }
+        return user
         // users.find(p => p.name === args.name)
         },
 

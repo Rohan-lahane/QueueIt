@@ -9,6 +9,7 @@ import {createClient} from 'graphql-ws'
 import App from './App'
 import './styles/index.css'
 
+
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('queueit-user-token')
   return {
