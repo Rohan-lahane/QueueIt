@@ -39,7 +39,9 @@ mutation addPlaylist($title: String!, $creatorId: String!)
   {
     title
     id
-    creator
+    creator{
+      _id
+    }
     songs {
       title
       link

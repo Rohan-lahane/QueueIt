@@ -18,6 +18,12 @@
     
 }
 
+.playlist a{
+  color: inherit;
+  
+}
+
+
 .playlist-open{
     display:block;
     order: -1;

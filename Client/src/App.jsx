@@ -1,7 +1,14 @@
 import { useState } from "react";
 // import jwt from 'jsonwebtoken'
 import jwtDecode from "jwt-decode";
-// import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import AuthForm from "./components/AuthForm";
 import Browse from "./components/Browse";
 import DashBoard from "./components/DashBoard";
@@ -12,7 +19,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
 import Footer from "./components/Footer";
-import {Link, animateScroll as scroll} from 'react-scroll'
+
+import LandingPage from "./components/LandingPage";
 
 function App() {
   const [token, setToken] = useState("");
@@ -26,63 +34,106 @@ function App() {
     // client.resetStore()
   };
 
-  const updatePlayList = (pl) => {
-    setPlayList([...playList, pl]);
-  };
+  const decodedToken = localStorage.queueitUserToken
+    ? jwtDecode(localStorage.queueitUserToken)
+    : null;
+
+  console.log("tokenns, ", token);
 
   if (localStorage.length === 0) {
+
+    console.log("redering here no local storage")
     return (
-      <div className="App">
-        <div className="qit">
-          Queue <em>It</em>.{" "}
-        </div>
-        <div className="intro">
-          All your music, in one place.
-          <div className="home-buttons">
-          <Link
-            to="auth"
-            smooth={true}
-            duration={500}
-            spy={true}
-            exact="true"
-            // offset={-80}
+      <Router>
+        <Routes>
+        <Route
+            path="/"
+            element={
+              <div>
+                <LandingPage />
+                <AuthForm setToken={setToken} />
+                <PlaylistForm />
+                <Browse />
+                <Footer />
+              </div>
+            }
+          />
 
-            >
-              <p> Sign In </p>
-            </Link>
+      <Route
+          path={`/users/:userid/*`}
+          element={  
+            <div> 
+              <DashBoard  logout={() => logout} />   
+              </div>
+          }
+        />
 
-            <Link
-            to="footer"
-            smooth={true}
-            duration={500}
-            spy={true}
-            exact="true"
-            // offset={-80}
-            >
-              <p>How to use</p>
-           </Link>
-          </div>
-        </div>
-
-        <AuthForm setToken={setToken} />
-        <PlaylistForm />
-        <Browse />
-
-        <Footer />
-      </div>
+          <Route
+            path="/playlists/:playlistid"
+            element={
+              <div>
+                <LandingPage />
+                <AuthForm setToken={setToken} />
+                <PlaylistForm />
+                <Browse />
+                <Footer />
+              </div>
+            }
+          />
+        </Routes>
+      </Router>
     );
   }
 
-  const decodedToken = jwtDecode(localStorage.queueitUserToken);
-  console.log("tokenns, ", token, "decoded : ", decodedToken);
+  // console.log(decodedToken)
+  // else{
 
+  console.log("render elseee");
   return (
-    <>
-      {decodedToken.username} logged in lololl
-      <button onClick={logout}>logout</button>
-      <DashBoard userId={decodedToken.id} />
-    </>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            decodedToken ? (
+              <Navigate replace to={`/users/${decodedToken.id}`} />
+            ) : (
+              <div>
+                <LandingPage />
+                <AuthForm setToken={setToken} />
+                <PlaylistForm />
+                <Browse />
+                <Footer />
+              </div>
+            )
+          }
+        />
+
+        <Route
+          path={`/users/:userid/*`}
+          element={  
+            <div> 
+              <DashBoard  logout={() => logout} />    
+              <PlaylistForm />
+              <Browse />
+              </div>
+          }
+        />
+
+        <Route
+          path="/playlists/:playlistid"
+          element={
+            <div>
+          <DashBoard  logout={() => logout} />
+          <PlaylistForm className="playlistForm" />
+          <Browse className="browse" />
+          </div>
+        }
+        />
+      </Routes>
+    </Router>
   );
+  // }
 }
 
 export default App;

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useMutation } from '@apollo/client'
 import { ADD_PLAYLIST } from '../queries'
-
+import '../styles/CreatePlaylist.css'
 
 const CreatePlForm = ({creator,setForm, list, setCount}) => {
     const [title, setTitle] = useState('')
@@ -21,7 +21,7 @@ const CreatePlForm = ({creator,setForm, list, setCount}) => {
         if(result.data)
         {
           
-          const newlist= list.concat(result.data.addPlaylist.id)
+          const newlist= list.concat(result.data.addPlaylist)
           console.log("add playlist data", result.data.addPlaylist.id, newlist)
           setForm()
           setCount(newlist)
@@ -29,14 +29,17 @@ const CreatePlForm = ({creator,setForm, list, setCount}) => {
         }
     },[result.data])
 
+    if(result.data) {console.log(result.data.addPlaylist)}
+
     return (
-      <div>
+      <div className='create-playlist'>
       <form onSubmit={submitPlaylistForm}>
-        title <input
+        <input
+          placeholder='name your playlist'
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
-      <button type='submit'>add playlist</button>
+      <button type='submit'>Add</button>
       {result.loading && <>making your playlist</>}
       {result.error && <>oops, {result.error.message} </>}
       

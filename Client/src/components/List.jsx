@@ -5,14 +5,15 @@ import "../styles/Playlist.css";
 import SongDisplay from "./SongDisplay";
 import { Button, Modal } from "react-bootstrap";
 import { set } from "mongoose";
-
-
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 
 const AddSongForm = ({ addTo, updateSongForm, updateSongList, songlist }) => {
   const [link, setLink] = useState("");
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
   const [addSong, result] = useMutation(ADD_SONG);
+
+  
 
   const handleSongSubmit = async (event) => {
     event.preventDefault();
@@ -80,7 +81,6 @@ const AddSongForm = ({ addTo, updateSongForm, updateSongList, songlist }) => {
 };
 
 const List = (props) => {
-
   // const id = props.creator
   // const {creatorLoading, creatorError, creator} = useQuery(FIND_USER, {variables:{id}})
   // const creatorName = ''
@@ -88,6 +88,9 @@ const List = (props) => {
   // if(creatorError){creatorName =`Error : ${creatorError.message}`}
   // creatorName = creator.data.findUser.username
 
+  const location = useLocation()
+  const previousPath = location.state?.prevPath;
+  console.log("previous path", location)
 
   console.log("list props: ", props);
   const [songForm, setSongForm] = useState(false);
@@ -108,37 +111,41 @@ const List = (props) => {
   };
 
   useEffect(() => {
-    setSongList(props.playlist.songs)
-  },[]);
+    setSongList(props.playlist.songs);
+  }, []);
 
-  
   // if (loading) return <>loadinggg....</>;
   // if (error) return <>error is : {error.message}</>;
 
   return (
     <div className={`playlist ${open ? "playlist-open" : ""}`}>
-      {/* {loading && <>loadingg</>} */}
-      {/* {error && <>error getting plalist details: {error.message}</>} */}
-      {/* {data && ( */}
+      
+        {/* {loading && <>loadingg</>} */}
+        {/* {error && <>error getting plalist details: {error.message}</>} */}
+        {/* {data && ( */}
+        <Link to={ props.close==="/"? `/playlists/${props.playlist.id}` : `/users/${props.playlist.creator._id}/playlists/${props.playlist.id}`}>
         <div
           className={`playlist-title ${open ? "no-hover" : ""}`}
           onClick={() => setOpen(true)}
         >
-          {props.playlist.title }
+          {props.playlist.title}
         </div>
-      {/* )} */}
-      {/* {data && ( */}
+        </Link>
+        {/* )} */}
+        {/* {data && ( */}
         <div>
           {open ? (
             <div>
-              <button
-                className="playlist-close-button"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
-                Close
-              </button>
+              <Link to={ `${props.close}`}>
+                <button
+                  className="playlist-close-button"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  Close
+                </button>
+              </Link>
               {songList.length ? (
                 songList.map((song, index) => (
                   <SongDisplay
@@ -176,9 +183,15 @@ const List = (props) => {
               </div>
             </div>
           ) : (
-            <h4 className={`playlist-creator`}> {props.playlist.creator.username}</h4>
+
+            <Link to={`/users/${props.playlist.creator._id}`}>
+            <h4 className={`playlist-creator`}>
+              {props.playlist.creator.username}
+            </h4>
+            </Link>
           )}
         </div>
+      
       {/* )} */}
     </div>
   );

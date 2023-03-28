@@ -6,6 +6,8 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import {GraphQLWsLink} from '@apollo/client/link/subscriptions'
 import {createClient} from 'graphql-ws'
 
+import Trial from './Trial'
+
 import App from './App'
 import './styles/index.css'
 

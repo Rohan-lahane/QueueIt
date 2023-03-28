@@ -6,7 +6,7 @@
     text-align: center;
     padding: 20px;
     font-family: 'Lato', sans-serif;
-    font-size: 2rem;
+    /* font-size: 2rem; */
     font-weight: 600;
     color: #745874;
 }
@@ -98,8 +98,18 @@
     justify-content:center;
   }
 
+  .find-playlist  button  {
+    /* color: tomato; */
+    /* background-color: yellowgreen; */
+    translate : 4vw ;
+
+  }
+  
+ 
+  
+
   .find-playlist p{
-    font-size: 1.2em;
+    font-size: 2rem;
     text-align:left;
     margin-left: 8%;
     /* background-color: aliceblue; */

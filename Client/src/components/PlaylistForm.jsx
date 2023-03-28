@@ -36,13 +36,13 @@ const PlaylistForm = () => {
           placeholder="Find playlist by title"
         />
 
-        <button type="submit"> Search </button>
+        <button className="user-dashboard-search" type="submit"> Search </button>
         {clear && <button onClick={clearSearch}> Clear </button>}
       </form>
 
       <div className="playlist-container">
         {playList.map((pl) => (
-          <List key={pl.id} playlist={pl} user={""} />
+          <List key={pl.id} playlist={pl} user={""} close={`/`} />
         ))}
       </div>
       <p className={`find-playlist-explore`}>Explore more :</p>
