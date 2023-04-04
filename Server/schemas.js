@@ -1,4 +1,3 @@
-
 const typeDefs = `
   type User {
     _id: ID! 
@@ -37,6 +36,7 @@ const typeDefs = `
     findUser(id: String!): User
     me: User!
     getAllPlaylists : [Playlist]
+ 
 
   }
 
@@ -46,6 +46,7 @@ const typeDefs = `
     login(username: String!, password: String!) : Token
     addPlaylist(title: String!, creatorId: String!): Playlist
     addSong(playlistId: String, title: String, link: String, platform: String ): Playlist!
+    
 
   }
 
@@ -53,6 +54,6 @@ const typeDefs = `
     playlistAdded: Playlist!
   }
 
-`
+`;
 
-module.exports = typeDefs
+module.exports = typeDefs;

@@ -1,17 +1,16 @@
-import React from 'react'
+import React from "react";
 import "../styles/App.css";
-import {Link, animateScroll as scroll} from 'react-scroll'
+import { Link, animateScroll as scroll } from "react-scroll";
 
 const LandingPage = () => {
-
-    return(
+  return (
     <div className="App">
-        <div className="qit">
-          Queue <em>It</em>.{" "}
-        </div>
-        <div className="intro">
-          All your music, in one place.
-          <div className="home-buttons">
+      <div className="qit">
+        Queue <em>It</em>.{" "}
+      </div>
+      <div className="intro">
+        All your music, in one place.
+        <div className="home-buttons">
           <Link
             to="auth"
             smooth={true}
@@ -20,24 +19,23 @@ const LandingPage = () => {
             exact="true"
             // offset={-80}
           >
-              <p> Sign In </p>
-            </Link>
+            <p> Sign In </p>
+          </Link>
 
-            <Link
+          <Link
             to="footer"
             smooth={true}
             duration={500}
             spy={true}
             exact="true"
             // offset={-80}
-            >
-              <p>How to use</p>
-           </Link>
-          </div>
+          >
+            <p>How to use</p>
+          </Link>
         </div>
-
       </div>
-    )
-}
+    </div>
+  );
+};
 
-export default LandingPage
+export default LandingPage;

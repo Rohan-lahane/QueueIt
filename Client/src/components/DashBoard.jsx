@@ -44,9 +44,12 @@ const DashBoard = ({ logout }) => {
     // 1000ms (1s) delay before scrolling to top
   }, []);
 
+  const openplaylist = location.pathname.substr(42)
+  console.log("open playlist", openplaylist)
+
   useEffect(() => {
     if (location.pathname.slice(0, 7) === "/users/") {
-      setUserID(location.pathname.slice(7,31));
+      setUserID(location.pathname.slice(7, 31));
       setTimeout(() => {
         animateScroll.scrollToTop({
           duration: 0,
@@ -133,6 +136,7 @@ const DashBoard = ({ logout }) => {
                         },
                       }}
                       user={userID}
+                      open ={openplaylist}
                       close={`/users/${pl.creator._id}`}
                     />
                   ))}
@@ -256,6 +260,7 @@ const DashBoard = ({ logout }) => {
                       },
                     }}
                     user={""}
+                    open ={openplaylist}
                     close={`/users/${pl.creator._id}`}
                   />
                 ))}

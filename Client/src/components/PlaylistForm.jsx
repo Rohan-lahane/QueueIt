@@ -36,7 +36,10 @@ const PlaylistForm = () => {
           placeholder="Find playlist by title"
         />
 
-        <button className="user-dashboard-search" type="submit"> Search </button>
+        <button className="user-dashboard-search" type="submit">
+          {" "}
+          Search{" "}
+        </button>
         {clear && <button onClick={clearSearch}> Clear </button>}
       </form>
 

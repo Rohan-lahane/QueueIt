@@ -5,15 +5,19 @@ import "../styles/Playlist.css";
 import SongDisplay from "./SongDisplay";
 import { Button, Modal } from "react-bootstrap";
 import { set } from "mongoose";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 
 const AddSongForm = ({ addTo, updateSongForm, updateSongList, songlist }) => {
   const [link, setLink] = useState("");
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
   const [addSong, result] = useMutation(ADD_SONG);
-
-  
 
   const handleSongSubmit = async (event) => {
     event.preventDefault();
@@ -88,9 +92,9 @@ const List = (props) => {
   // if(creatorError){creatorName =`Error : ${creatorError.message}`}
   // creatorName = creator.data.findUser.username
 
-  const location = useLocation()
+  const location = useLocation();
   const previousPath = location.state?.prevPath;
-  console.log("previous path", location)
+  console.log("previous path", location);
 
   console.log("list props: ", props);
   const [songForm, setSongForm] = useState(false);
@@ -112,6 +116,9 @@ const List = (props) => {
 
   useEffect(() => {
     setSongList(props.playlist.songs);
+    if(props.open&& props.open === props.playlist.id){
+      setOpen(true)
+    }
   }, []);
 
   // if (loading) return <>loadinggg....</>;
@@ -119,79 +126,81 @@ const List = (props) => {
 
   return (
     <div className={`playlist ${open ? "playlist-open" : ""}`}>
-      
-        {/* {loading && <>loadingg</>} */}
-        {/* {error && <>error getting plalist details: {error.message}</>} */}
-        {/* {data && ( */}
-        <Link to={ props.close==="/"? `/playlists/${props.playlist.id}` : `/users/${props.playlist.creator._id}/playlists/${props.playlist.id}`}>
+      {/* {loading && <>loadingg</>} */}
+      {/* {error && <>error getting plalist details: {error.message}</>} */}
+      {/* {data && ( */}
+      <Link
+        to={
+          props.close === "/"
+            ? `/playlists/${props.playlist.id}`
+            : `/users/${props.playlist.creator._id}/playlists/${props.playlist.id}`
+        }
+      >
         <div
           className={`playlist-title ${open ? "no-hover" : ""}`}
           onClick={() => setOpen(true)}
         >
           {props.playlist.title}
         </div>
-        </Link>
-        {/* )} */}
-        {/* {data && ( */}
-        <div>
-          {open ? (
+      </Link>
+      {/* )} */}
+      {/* {data && ( */}
+      <div>
+        {open ? (
+          <div>
+            <Link to={`${props.close}`}>
+              <button
+                className="playlist-close-button"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                Close
+              </button>
+            </Link>
+            {songList.length ? (
+              songList.map((song, index) => (
+                <SongDisplay
+                  key={song.link}
+                  index={index}
+                  title={song.title}
+                  link={song.link}
+                  platform={song.platform}
+                />
+              ))
+            ) : (
+              <>add some songs to this playlist!</>
+            )}
             <div>
-              <Link to={ `${props.close}`}>
-                <button
-                  className="playlist-close-button"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                >
-                  Close
-                </button>
-              </Link>
-              {songList.length ? (
-                songList.map((song, index) => (
-                  <SongDisplay
-                    key={song.link}
-                    index={index}
-                    title={song.title}
-                    link={song.link}
-                    platform={song.platform}
+              {songForm ? (
+                <>
+                  <button onClick={() => setSongForm(false)}>cancel</button>
+                  <AddSongForm
+                    addTo={props.id}
+                    updateSongForm={() => updateSongForm()}
+                    updateSongList={(songs) => updateSongs(songs)}
+                    songlist={songList}
                   />
-                ))
+                </>
               ) : (
-                <>add some songs to this playlist!</>
+                <>
+                  {" "}
+                  {props.user === props.playlist.creator._id && (
+                    <button onClick={() => setSongForm(true)}>add song</button>
+                  )}{" "}
+                </>
               )}
-              <div>
-                {songForm ? (
-                  <>
-                    <button onClick={() => setSongForm(false)}>cancel</button>
-                    <AddSongForm
-                      addTo={props.id}
-                      updateSongForm={() => updateSongForm()}
-                      updateSongList={(songs) => updateSongs(songs)}
-                      songlist={songList}
-                    />
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    {props.user === props.playlist.creator._id && (
-                      <button onClick={() => setSongForm(true)}>
-                        add song
-                      </button>
-                    )}{" "}
-                  </>
-                )}
-              </div>
             </div>
-          ) : (
-
-            <Link to={`/users/${props.playlist.creator._id}`}>
+          </div>
+        ) : (
+          <Link to={`/users/${props.playlist.creator._id}`}>
             <h4 className={`playlist-creator`}>
               {props.playlist.creator.username}
             </h4>
-            </Link>
-          )}
-        </div>
-      
+          </Link>
+        )}
+      </div>
+
       {/* )} */}
     </div>
   );
