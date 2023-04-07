@@ -18,11 +18,28 @@ import {
 } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useLocation } from "react-router-dom";
+import axios from 'axios'
 
-const DashBoard = ({ logout }) => {
+
+const DashBoard = ({ logout, spotifyToken }) => {
   const [form, setForm] = useState(false);
   const [list, setList] = useState([]);
   const [userID, setUserID] = useState("");
+
+  const track = {
+    name: "",
+    album: {
+      images: [{ url: "" }],
+    },
+    artists: [{ name: "" }],
+  };
+
+  const [player, setPlayer] = useState(undefined);
+  const [is_paused, setPaused] = useState(false);
+  const [is_active, setActive] = useState(false);
+  const [current_track, setTrack] = useState(track);
+  const [device, setDevice] = useState("");
+
 
   const location = useLocation();
   console.log(location.pathname.slice(7, 31));
@@ -43,6 +60,82 @@ const DashBoard = ({ logout }) => {
     console.log("user from linnnk", userID);
     // 1000ms (1s) delay before scrolling to top
   }, []);
+
+  useEffect(() => {
+    // console.log("check for token in useeffect "spotifyToken)
+    
+
+      console.log( "check token for player", spotifyToken )
+    const script = document.createElement("script");
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: "Queue It",
+        getOAuthToken: (cb) => {
+          cb(spotifyToken);
+        },
+        volume: 0.5,
+      });
+
+      setPlayer(player);
+
+      player.addListener("ready", ({ device_id }) => {
+        console.log("Ready with Device ID", device_id);
+        setDevice(device_id);
+
+        axios
+        .put(
+          `https://api.spotify.com/v1/me/player`,
+          {
+            device_ids: [device_id],
+            play: false,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${spotifyToken}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Playback transferred successfully.");
+        })
+        .catch((error) => {
+          console.error("Failed to transfer playback:", error);
+        });
+      });
+
+      player.addListener("not_ready", ({ device_id }) => {
+        console.log("Device ID has gone offline", device_id);
+      });
+
+      player.addListener("player_state_changed", (state) => {
+        if (!state) {
+          return;
+        }
+
+        setTrack(state.track_window.current_track);
+        setPaused(state.paused);
+
+        if (state.position === state.duration) {
+          console.log('Track ended.');
+        }
+
+        player.getCurrentState().then((state) => {
+          !state ? setActive(false) : setActive(true);
+        });
+      });
+
+     
+
+      player.connect();
+    };
+    
+  }, []);
+
 
   const openplaylist = location.pathname.substr(42)
   console.log("open playlist", openplaylist)
@@ -88,10 +181,16 @@ const DashBoard = ({ logout }) => {
 
   console.log("finduser ", data.findUser, "list is noww: \n", list);
 
+ 
+
   if (decodedToken && decodedToken.id === userID && 1) {
+
+ 
+    
     return (
+      <>
       <Routes>
-        <Route
+      <Route
           path={`/*`}
           element={
             <div className={`user-dashboard`}>
@@ -99,6 +198,7 @@ const DashBoard = ({ logout }) => {
                 <button onClick={logout()}>logout</button>
               </Link>
               <h1>Hey {data.findUser.username} !</h1>
+              {/* <h4>{spotifyToken}</h4> */}
 
               {form ? (
                 <div>
@@ -138,6 +238,9 @@ const DashBoard = ({ logout }) => {
                       user={userID}
                       open ={openplaylist}
                       close={`/users/${pl.creator._id}`}
+                      spotifyToken={spotifyToken}
+                      spotifyPlayer={player}
+                      deviceId={device}
                     />
                   ))}
                 </div>
@@ -192,6 +295,9 @@ const DashBoard = ({ logout }) => {
                       }}
                       user={userID}
                       close={`/users/${pl.creator._id}`}
+                      spotifyToken={spotifyToken}
+                      spotifyPlayer={player}
+                      deviceId={device}
                     />
                   ))}
                 </div>
@@ -200,7 +306,10 @@ const DashBoard = ({ logout }) => {
           }
         />
       </Routes>
+      </>
     );
+       
+        
   }
 
   return (

@@ -85,24 +85,24 @@ const AddSongForm = ({ addTo, updateSongForm, updateSongList, songlist }) => {
 };
 
 const List = (props) => {
-  // const id = props.creator
-  // const {creatorLoading, creatorError, creator} = useQuery(FIND_USER, {variables:{id}})
-  // const creatorName = ''
-  // if(creatorLoading){ creatorName="loading ..."}
-  // if(creatorError){creatorName =`Error : ${creatorError.message}`}
-  // creatorName = creator.data.findUser.username
-
   const location = useLocation();
   const previousPath = location.state?.prevPath;
-  console.log("previous path", location);
+  const [count, setCount] = useState(-1);
+  // console.log("previous path", location);
 
-  console.log("list props: ", props);
+  // console.log("list props: ", props);
   const [songForm, setSongForm] = useState(false);
   // const { loading, error, data } = useQuery(GET_PLAYLIST_BY_ID, {
   //   variables: { var: props.id },
   // });
   const [open, setOpen] = useState(false);
   const [songList, setSongList] = useState([]);
+
+  const spotifyToken = localStorage.spotifyAcessToken
+    ? localStorage.spotifyAcessToken
+    : null;
+
+  console.log("spotify token in list", spotifyToken);
 
   const updateSongs = (songs) => {
     console.log("setting new song list : ", songs);
@@ -116,8 +116,8 @@ const List = (props) => {
 
   useEffect(() => {
     setSongList(props.playlist.songs);
-    if(props.open&& props.open === props.playlist.id){
-      setOpen(true)
+    if (props.open && props.open === props.playlist.id) {
+      setOpen(true);
     }
   }, []);
 
@@ -141,6 +141,7 @@ const List = (props) => {
           onClick={() => setOpen(true)}
         >
           {props.playlist.title}
+          {count}
         </div>
       </Link>
       {/* )} */}
@@ -152,12 +153,26 @@ const List = (props) => {
               <button
                 className="playlist-close-button"
                 onClick={() => {
+                  setCount(-1)
                   setOpen(false);
+                 
                 }}
               >
                 Close
               </button>
             </Link>
+            {spotifyToken ? (
+              count === -1 ? (
+                <button onClick={() => setCount(count + 1)}>PLAY</button>
+              ) : (
+                <div>
+                  <button onClick={() => setCount(-1)}>Stop</button>{" "}
+                  <button onClick={() => setCount(count + 1)}>next</button>
+                </div>
+              )
+            ) : (
+              <p>login to play </p>
+            )}
             {songList.length ? (
               songList.map((song, index) => (
                 <SongDisplay
@@ -166,6 +181,11 @@ const List = (props) => {
                   title={song.title}
                   link={song.link}
                   platform={song.platform}
+                  spotifyToken={spotifyToken}
+                  count={count}
+                  setCount={(n) => setCount(count + n)}
+                  spotifyPlayer={props.spotifyPlayer}
+                  deviceId={props.deviceId}
                 />
               ))
             ) : (

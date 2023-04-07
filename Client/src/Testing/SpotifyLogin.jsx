@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import AuthForm from "../components/AuthForm";
+import { useDispatch } from 'react-redux';
+import {setStoken} from '../reduxSlice'
 // import SpotifyPlayer from "react-spotify-web-playback";
 
 const useAuth = (code) => {
@@ -29,7 +32,7 @@ const useAuth = (code) => {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post("http://localhost:5173/refresh", {
+        .post("http://localhost:4000/refresh", {
           refreshToken,
         })
         .then((res) => {
@@ -107,6 +110,7 @@ const Player = (props) => {
 
         if (state.position === state.duration) {
           console.log('Track ended.');
+
         }
 
         player.getCurrentState().then((state) => {
@@ -149,22 +153,22 @@ const Player = (props) => {
       console.log('Resumed!');
     });
 
-      axios({
-      method: 'PUT',
-      url: 'https://api.spotify.com/v1/me/player/play',
-      headers: {
-        'Authorization': `Bearer ${props.token}`
-      },
-      data: {
-        uris: [uri]
-      }
-    })
-      .then(response => {
-        console.log('Song played successfully');
+    axios({
+        method: 'PUT',
+        url: 'https://api.spotify.com/v1/me/player/play',
+        headers: {
+          'Authorization': `Bearer ${props.token}`
+        },
+        data: {
+          uris: [uri]
+        }
       })
-      .catch(error => {
-        console.error(error ," uri passed: ", uri, "\n acess token ", props.token);
-      });
+        .then(response => {
+          console.log('Song played successfully');
+        })
+        .catch(error => {
+          console.error(error ," uri passed: ", uri, "\n acess token ", props.token);
+        });
     // player.nextTrack().then(() => {
     //   console.log('Skipped to next track!');
     // });
@@ -205,8 +209,16 @@ const Player = (props) => {
 };
 
 const Dash = ({ code }) => {
+
+    const dispatch = useDispatch();
   console.log("code reaching dashhh", code);
   const [accessToken, expiresIn] = useAuth(code);
+  
+
+  useEffect(() => {
+    if (accessToken) {
+      dispatch(setStoken(accessToken));
+
   localStorage.setItem("spotifyAcessToken", accessToken);
   localStorage.setItem("expiresIn", expiresIn);
   localStorage.setItem("storeTime", new Date().getTime());
@@ -217,51 +229,34 @@ const Dash = ({ code }) => {
   }, tokenExpiryTime);
 
   console.log("dashboard acess toekn", accessToken);
+    }
+  }, [accessToken, dispatch]);
 
-  const handleQueue = (accessToken) => {
-    console.log("acess token for button", accessToken);
+//  const generateToken = useCallback(()=>{
+//     if(accessToken!=undefined){
+//     const stoken = accessToken
+//     console.log("token dispatchedd", stoken )
+//     dispatch(setStoken(stoken))
+//     }
+//  },[dispatch])
 
-    axios
-      .get(`https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+//  useEffect(() => {
+//     generateToken();
+//   }, [generateToken]);
 
   return (
     <>
       this is acesssss {accessToken}
-      <button onClick={() => handleQueue(accessToken)}> queue novocaine</button>
-      {accessToken && <Player token={accessToken} />}
     </>
   );
 };
 
 const Trial = () => {
   const code = new URLSearchParams(window.location.search).get("code");
-  const now = new Date().getTime();
-  console.log("nowww",now, localStorage.getItem("storeTime"), localStorage.getItem("expiresIn"), " \ndiff: ", (now - localStorage.getItem("storeTime")))
-  const token =
-    ((now - localStorage.getItem("storeTime")) > (localStorage.getItem("expiresIn")*1000))
-      ? "null"
-      : localStorage.getItem("spotifyAcessToken");
-  if (token === "null") {
-    localStorage.clear();
-  }
-  console.log("spotify-code", code);
-
+  
   return (
-    <div>
-      {token && token !== "undefined" && token !== "null" ? (
-        <Player token={token} />
-      ) : code ? (
+    < div id="auth">
+      { code ? (
         <Dash code={code} />
       ) : (
         <Login />

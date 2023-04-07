@@ -14,15 +14,17 @@ import { createClient } from "graphql-ws";
 import {
   BrowserRouter 
 } from "react-router-dom";
+import { Provider } from 'react-redux';
+import { store } from './reduxStore';
 
-
-import SpotifyTrial from "./Testing/SpotifyTrial";
-import YoutubeTrial from "./Testing/YoutubeTrial"
-import SoundCloudTrial from "./Testing/SoundcloudTrial";
-import DriveTrial from "./Testing/DriveTrial";
+import SpotifyLogin from "./Testing/SpotifyLogin";
+// import YoutubeTrial from "./Testing/YoutubeTrial"
+// import SoundCloudTrial from "./Testing/SoundcloudTrial";
+// import DriveTrial from "./Testing/DriveTrial";
 
 import App from "./App";
 import "./styles/index.css";
+import { Spotify } from "react-spotify-embed";
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("queueit-user-token");
@@ -63,11 +65,15 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <ApolloProvider client={client}>
+    <Provider store={store}>
     <BrowserRouter>
-        <YoutubeTrial/>
+        {/* <YoutubeTrial/>
         <SoundCloudTrial/>
-        <DriveTrial/>
+        <DriveTrial/> */}
+        {/* <SpotifyLogin/> */}
+        <App/>
     </BrowserRouter>
+    </Provider>
   </ApolloProvider>
   // </React.StrictMode>,
 );
