@@ -31,7 +31,7 @@ const httpLink = createHttpLink({
   uri: "https://queue-it.onrender.com/",
 });
 
-const wsLink = new GraphQLWsLink(createClient({ url: "ws://localhost:4000" }));
+const wsLink = new GraphQLWsLink(createClient({ url: "ws://queue-it.onrender.com" }));
 
 const splitLink = split(
   ({ query }) => {

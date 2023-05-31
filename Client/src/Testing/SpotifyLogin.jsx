@@ -13,7 +13,7 @@ const useAuth = (code) => {
 
   useEffect(() => {
     axios
-      .post("http://localhost:4000/login", {
+      .post("https://queue-it.onrender.com/login", {
         code,
       })
       .then((res) => {
@@ -32,7 +32,7 @@ const useAuth = (code) => {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post("http://localhost:4000/refresh", {
+        .post("https://queue-it.onrender.com/refresh", {
           refreshToken,
         })
         .then((res) => {
@@ -53,7 +53,7 @@ const useAuth = (code) => {
 
 const Login = () => {
   const AUTH_URL =
-    "https://accounts.spotify.com/authorize?client_id=58f6327adb8d406b86b39a7c330cd125&response_type=code&redirect_uri=http://localhost:5173&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
+    "https://accounts.spotify.com/authorize?client_id=58f6327adb8d406b86b39a7c330cd125&response_type=code&redirect_uri=https://queue-it.netlify.app/&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
 
   return (
     <div className="spotifyLogin">
