@@ -28,7 +28,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000",
+  uri: "https://queue-it.onrender.com/",
 });
 
 const wsLink = new GraphQLWsLink(createClient({ url: "ws://localhost:4000" }));
