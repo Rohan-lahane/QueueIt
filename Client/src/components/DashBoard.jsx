@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { from, useQuery, useSubscription, useLazyQuery } from "@apollo/client";
 import { ME, FIND_USER, PLAYLIST_ADDED, ADD_PLAYLIST } from "../queries";
-import Browse from "./Browse";
+// import Browse from "./Browse";
 import CreatePlForm from "./CreatePlForm";
 import List from "./List";
 import "../styles/Playlist.css";
 import "../styles/Dashboard.css";
-import PlaylistForm from "./PlaylistForm";
+// import PlaylistForm from "./PlaylistForm";
 import { animateScroll } from "react-scroll";
 import {
   BrowserRouter as Router,
