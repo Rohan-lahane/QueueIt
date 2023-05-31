@@ -51,7 +51,7 @@ mongoose
 
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
 const clientId= process.env.SPOTIFY_CLIENT_ID
-const redirectUri= 'http://localhost:5173'
+const redirectUri= 'https://queue-it.netlify.app'
 
 // console.log("spotify ids", clientId, redirectUri)
 
@@ -149,7 +149,7 @@ const start = async () => {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
-        console.log("as requested:: ", req.body);
+        // console.log("as requested:: ", req.body);
         const auth = req ? req.headers.authorization : null;
         if (auth && auth.startsWith("Bearer ")) {
           const decodedToken = jwt.verify(
