@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import axios from "axios";
-import YouTube from 'react-youtube';
+import YouTube from "react-youtube";
 
 const SongDisplay = ({
   index,
@@ -12,75 +12,65 @@ const SongDisplay = ({
   count,
   setCount,
   spotifyPlayer,
-  deviceId
+  deviceId,
 }) => {
-
-
   // console.log("spotifyPlayer", spotifyPlayer)
   const [youtubePlayer, setYoutubePlayer] = useState(null);
-  const [soundcloudPlaying, setSoundcloudPlaying] = useState(false)
+  const [soundcloudPlaying, setSoundcloudPlaying] = useState(false);
   const soundcloudPlayerRef = useRef(null);
+  const [spotifyUri, setSpotifyUri] = useState("");
 
   const onReady = (event) => {
     setYoutubePlayer(event.target);
-   
   };
 
   const ytonEnd = () => {
-    if(youtubePlayer){
-    console.log('Video ended');
-    youtubePlayer.stopVideo();
-    setCount(1)
+    if (youtubePlayer) {
+      console.log("Video ended");
+      youtubePlayer.stopVideo();
+      setCount(1);
     }
   };
 
   const schandleEnded = () => {
-    console.log('Song ended');
-    setPlaying(false);
+    console.log("Song ended");
+    setSoundcloudPlaying(false);
     soundcloudPlayerRef.current?.getInternalPlayer()?.pause();
-    setCount(1)
+    setCount(1);
   };
 
-  const handlePlay = () => {
+  const handlePlay = (spotifyUri) => {
     if (platform === "spotify") {
-
-     
-// spotifyPlayer.pause().then(()=>{
-//       console.log("paused for drama ")
-   
-  
-//     })
-
-    axios({
-      method: 'PUT',
-      url: 'https://api.spotify.com/v1/me/player/play',
-      headers: {
-        'Authorization': `Bearer ${spotifyToken}`
-      },
-      data: {
-        uris: ["spotify:track:6e6HDpdRGv2QJCrUn3pXFP"]
-      }
-    })
-      .then(response => {
-        console.log('Song played successfully');
-         spotifyPlayer.resume().then(() => {
-        console.log("Resumed!");
-      });
+      axios({
+        method: "PUT",
+        url: "https://api.spotify.com/v1/me/player/play",
+        headers: {
+          Authorization: `Bearer ${spotifyToken}`,
+        },
+        data: {
+          uris: [`spotify:track:${spotifyUri}`],
+        },
       })
-      .catch(error => {
-        console.error(error ," uri passed: ", "spotify:track:6e6HDpdRGv2QJCrUn3pXFP", "\n acess token ", spotifyToken);
-      });
-
-
-      
-
+        .then((response) => {
+          console.log("Song played successfully");
+          spotifyPlayer.resume().then(() => {
+            console.log("Resumed!");
+          });
+        })
+        .catch((error) => {
+          console.error(
+            error,
+            " uri passed: ",
+            "spotify:track:6e6HDpdRGv2QJCrUn3pXFP",
+            "\n acess token ",
+            spotifyToken
+          );
+        });
     }
 
-    
- 
     if (platform === "youtube") {
-      if(youtubePlayer){
-      youtubePlayer.playVideo();
+      if (youtubePlayer) {
+        youtubePlayer.playVideo();
       }
     }
     if (platform === "soundcloud") {
@@ -91,37 +81,42 @@ const SongDisplay = ({
   };
 
   const handlePause = () => {
-
     if (platform === "spotify") {
-      spotifyPlayer.pause()
+      spotifyPlayer.pause();
     }
     if (platform === "youtube") {
-      if(youtubePlayer){
-      youtubePlayer.pauseVideo() ;
+      if (youtubePlayer) {
+        youtubePlayer.pauseVideo();
       }
 
-      console.log("pausing yt")
+      console.log("pausing yt");
     }
-    if(platform ==="soundcloud")
-    {
+    if (platform === "soundcloud") {
       setSoundcloudPlaying(false);
       soundcloudPlayerRef.current?.getInternalPlayer()?.pause();
     }
-  
-
   };
 
-  const handleSpotifyEnd=()=>{
-    spotifyPlayer.pause()
-    setCount(1)
-  }
+  const handleSpotifyEnd = () => {
+    spotifyPlayer.pause();
+    setCount(1);
+  };
   useEffect(() => {
     if (spotifyToken) {
+      const trackId = link.split("/").pop().split("?")[0];
+      console.log("spotify link", trackId);
+      setSpotifyUri(trackId);
 
       if (index === count) {
+        handlePlay(spotifyUri);
+      }
 
-        handlePlay()
-       
+      if (index < count) {
+        handlePause();
+      }
+
+      if (index > count) {
+        handlePause();
       }
 
       if (count === -1) {
@@ -132,58 +127,65 @@ const SongDisplay = ({
         if (!state) {
           return;
         }
-  
+
         if (state.position === state.duration) {
           console.log("Track ended.");
           handleSpotifyEnd();
-         
         }
       });
-      
     }
   }, [count]);
 
   if (spotifyToken) {
-
-
-    if(platform==="spotify"){
-    return (
-      <>
-        <div>{title}: Spotify song </div>
-        {/* <button onClick={()=>handlePlay()}>Play</button> */}
-        <br/>
-      </>
-    );
-  }
-
-  if(platform==="youtube")
-  {
-    return(
-      <YouTube videoId="stmAV96l_E0" onReady={onReady} onEnd={ytonEnd} />
-    )
-  }
-
-  if(platform==="soundcloud")
-  {
-    return(
-      <div>
-      <ReactPlayer
-        ref={soundcloudPlayerRef}
-        url='https://soundcloud.com/tvdinnertvdinner/honey?si=f0693bd8702a48609624baf8d9bf253f&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'
-        playing={soundcloudPlaying}
-        onEnded={schandleEnded}
-      />
-      {!soundcloudPlaying ? <button onClick={handlePlay}>Play</button> : <button onClick={handlePause}>Pause</button>}
-    </div>
-    )
-  }
-
-  } 
-  
-  
-  else {
     if (platform === "spotify") {
       const spotifylink = link.substr(25);
+      return (
+        <>
+         
+          <div>{title}: Spotify song </div>
+          <iframe
+            src={`https://open.spotify.com/embed/${spotifylink}?utm_source=generator&theme=0`}
+            width="90%"
+            height="80"
+            frameborder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+          {/* <button onClick={()=>handlePlay()}>Play</button> */}
+          <br />
+        </>
+      );
+    }
+
+    if (platform === "youtube") {
+      const ytlink = link.substr(17);
+      return (
+        <YouTube videoId={`${ytlink}`} onReady={onReady} onEnd={ytonEnd} />
+      );
+    }
+
+    if (platform === "soundcloud") {
+      return (
+        <div>
+          <ReactPlayer
+            ref={soundcloudPlayerRef}
+            url={`${link}`}
+            playing={soundcloudPlaying}
+            onEnded={schandleEnded}
+          />
+          {!soundcloudPlaying ? (
+            <button onClick={handlePlay}>Play</button>
+          ) : (
+            <button onClick={handlePause}>Pause</button>
+          )}
+        </div>
+      );
+    }
+  } else {
+    if (platform === "spotify") {
+      const spotifylink = link.substr(25);
+
       return (
         <div>
           <iframe

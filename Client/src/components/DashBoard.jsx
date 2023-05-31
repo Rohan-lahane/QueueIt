@@ -18,8 +18,7 @@ import {
 } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useLocation } from "react-router-dom";
-import axios from 'axios'
-
+import axios from "axios";
 
 const DashBoard = ({ logout, spotifyToken }) => {
   const [form, setForm] = useState(false);
@@ -39,7 +38,6 @@ const DashBoard = ({ logout, spotifyToken }) => {
   const [is_active, setActive] = useState(false);
   const [current_track, setTrack] = useState(track);
   const [device, setDevice] = useState("");
-
 
   const location = useLocation();
   console.log(location.pathname.slice(7, 31));
@@ -63,9 +61,8 @@ const DashBoard = ({ logout, spotifyToken }) => {
 
   useEffect(() => {
     // console.log("check for token in useeffect "spotifyToken)
-    
 
-      console.log( "check token for player", spotifyToken )
+    console.log("check token for player", spotifyToken);
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
@@ -88,24 +85,24 @@ const DashBoard = ({ logout, spotifyToken }) => {
         setDevice(device_id);
 
         axios
-        .put(
-          `https://api.spotify.com/v1/me/player`,
-          {
-            device_ids: [device_id],
-            play: false,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${spotifyToken}`,
+          .put(
+            `https://api.spotify.com/v1/me/player`,
+            {
+              device_ids: [device_id],
+              play: false,
             },
-          }
-        )
-        .then((response) => {
-          console.log("Playback transferred successfully.");
-        })
-        .catch((error) => {
-          console.error("Failed to transfer playback:", error);
-        });
+            {
+              headers: {
+                Authorization: `Bearer ${spotifyToken}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log("Playback transferred successfully.");
+          })
+          .catch((error) => {
+            console.error("Failed to transfer playback:", error);
+          });
       });
 
       player.addListener("not_ready", ({ device_id }) => {
@@ -121,7 +118,7 @@ const DashBoard = ({ logout, spotifyToken }) => {
         setPaused(state.paused);
 
         if (state.position === state.duration) {
-          console.log('Track ended.');
+          console.log("Track ended.");
         }
 
         player.getCurrentState().then((state) => {
@@ -129,16 +126,12 @@ const DashBoard = ({ logout, spotifyToken }) => {
         });
       });
 
-     
-
       player.connect();
     };
-    
   }, []);
 
-
-  const openplaylist = location.pathname.substr(42)
-  console.log("open playlist", openplaylist)
+  const openplaylist = location.pathname.substr(42);
+  console.log("open playlist", openplaylist);
 
   useEffect(() => {
     if (location.pathname.slice(0, 7) === "/users/") {
@@ -181,135 +174,128 @@ const DashBoard = ({ logout, spotifyToken }) => {
 
   console.log("finduser ", data.findUser, "list is noww: \n", list);
 
- 
-
   if (decodedToken && decodedToken.id === userID && 1) {
-
- 
-    
     return (
       <>
-      <Routes>
-      <Route
-          path={`/*`}
-          element={
-            <div className={`user-dashboard`}>
-              <Link className="user-dashboard-logout" to="/">
-                <button onClick={logout()}>logout</button>
-              </Link>
-              <h1>Hey {data.findUser.username} !</h1>
-              {/* <h4>{spotifyToken}</h4> */}
+        <Routes>
+          <Route
+            path={`/*`}
+            element={
+              <div className={`user-dashboard`}>
+                <Link className="user-dashboard-logout" to="/">
+                  <button onClick={logout()}>logout</button>
+                </Link>
+                <h1>Hey {data.findUser.username} !</h1>
+                {/* <h4>{spotifyToken}</h4> */}
 
-              {form ? (
-                <div>
-                  <div className="close-addpl" onClick={() => setForm(!form)}>
-                    close
-                  </div>
+                {form ? (
+                  <div>
+                    <div className="close-addpl" onClick={() => setForm(!form)}>
+                      close
+                    </div>
 
-                  <CreatePlForm
-                    creator={data.findUser}
-                    setForm={() => updateForm()}
-                    setCount={(val) => updateCount(val)}
-                    form={form}
-                    list={list}
-                    // UpdateList ={()=>UpdateList}
-                  />
-                </div>
-              ) : (
-                <div
-                  className="user-dashboard-addpl"
-                  onClick={() => setForm(!form)}
-                >
-                  +
-                </div>
-              )}
-              {
-                <div className="playlist-container">
-                  {list.map((pl) => (
-                    <List
-                      key={pl.id}
-                      playlist={{
-                        ...pl,
-                        creator: {
-                          _id: pl.creator._id,
-                          username: data.findUser.username,
-                        },
-                      }}
-                      user={userID}
-                      open ={openplaylist}
-                      close={`/users/${pl.creator._id}`}
-                      spotifyToken={spotifyToken}
-                      spotifyPlayer={player}
-                      deviceId={device}
+                    <CreatePlForm
+                      creator={data.findUser}
+                      setForm={() => updateForm()}
+                      setCount={(val) => updateCount(val)}
+                      form={form}
+                      list={list}
+                      
                     />
-                  ))}
-                </div>
-              }
-            </div>
-          }
-        />
-
-        <Route
-          path="/playlists/:playlistid/*"
-          element={
-            <div className={`user-dashboard`}>
-              <Link className="user-dashboard-logout" to="/">
-                <button onClick={logout()}>logout</button>
-              </Link>
-              <h1>Hey {data.findUser.username} !</h1>
-
-              {form ? (
-                <div>
-                  <div className="close-addpl" onClick={() => setForm(!form)}>
-                    close
                   </div>
+                ) : (
+                  <div
+                    className="user-dashboard-addpl"
+                    onClick={() => setForm(!form)}
+                  >
+                    +
+                  </div>
+                )}
+                {
+                  <div className="playlist-container">
+                    {list.map((pl) => (
+                      <List
+                        key={pl.id}
+                        playlist={{
+                          ...pl,
+                          creator: {
+                            _id: pl.creator._id,
+                            username: data.findUser.username,
+                          },
+                        }}
+                        user={userID}
+                        open={openplaylist}
+                        close={`/users/${pl.creator._id}`}
+                        spotifyToken={spotifyToken}
+                        spotifyPlayer={player}
+                        deviceId={device}
+                      />
+                    ))}
+                  </div>
+                }
+              </div>
+            }
+          />
 
-                  <CreatePlForm
-                    creator={data.findUser}
-                    setForm={() => updateForm()}
-                    setCount={(val) => updateCount(val)}
-                    form={form}
-                    list={list}
-                    // UpdateList ={()=>UpdateList}
-                  />
-                </div>
-              ) : (
-                <div
-                  className="user-dashboard-addpl"
-                  onClick={() => setForm(!form)}
-                >
-                  +
-                </div>
-              )}
-              {
-                <div className="playlist-container">
-                  {list.map((pl) => (
-                    <List
-                      key={pl.id}
-                      playlist={{
-                        ...pl,
-                        creator: {
-                          _id: pl.creator._id,
-                          username: data.findUser.username,
-                        },
-                      }}
-                      user={userID}
-                      close={`/users/${pl.creator._id}`}
-                      spotifyToken={spotifyToken}
-                      spotifyPlayer={player}
-                      deviceId={device}
+          <Route
+            path="/playlists/:playlistid/*"
+            element={
+              <div className={`user-dashboard`}>
+                <Link className="user-dashboard-logout" to="/">
+                  <button onClick={logout()}>logout</button>
+                </Link>
+                <h1>Hey {data.findUser.username} !</h1>
+
+                {form ? (
+                  <div>
+                    <div className="close-addpl" onClick={() => setForm(!form)}>
+                      close
+                    </div>
+
+                    <CreatePlForm
+                      creator={data.findUser}
+                      setForm={() => updateForm()}
+                      setCount={(val) => updateCount(val)}
+                      form={form}
+                      list={list}
+                      // UpdateList ={()=>UpdateList}
                     />
-                  ))}
-                </div>
-              }
-            </div>
-          }
-        />
-      </Routes>
+                  </div>
+                ) : (
+                  <div
+                    className="user-dashboard-addpl"
+                    onClick={() => setForm(!form)}
+                  >
+                    +
+                  </div>
+                )}
+                {
+                  <div className="playlist-container">
+                    {list.map((pl) => (
+                      <List
+                        key={pl.id}
+                        playlist={{
+                          ...pl,
+                          creator: {
+                            _id: pl.creator._id,
+                            username: data.findUser.username,
+                          },
+                        }}
+                        user={userID}
+                        close={`/users/${pl.creator._id}`}
+                        spotifyToken={spotifyToken}
+                        spotifyPlayer={player}
+                        deviceId={device}
+                      />
+                    ))}
+                  </div>
+                }
+              </div>
+            }
+          />
+        </Routes>
       </>
     );
-       
-        
   }
 
   return (
@@ -369,7 +355,7 @@ const DashBoard = ({ logout, spotifyToken }) => {
                       },
                     }}
                     user={""}
-                    open ={openplaylist}
+                    open={openplaylist}
                     close={`/users/${pl.creator._id}`}
                   />
                 ))}

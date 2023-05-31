@@ -6,7 +6,7 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import AuthForm from "./components/AuthForm";
 import Browse from "./components/Browse";
@@ -20,47 +20,40 @@ import { Spotify } from "react-spotify-embed";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
-import SpotifyLogin from './Testing/SpotifyLogin'
-// import SpotifyPlayer from "react-spotify-web-playback";
+import SpotifyLogin from "./Testing/SpotifyLogin";
 import { useSelector } from "react-redux";
 
-
-
-
-
-
-const App=()=> {
+const App = () => {
   const [token, setToken] = useState("");
   const stoken = useSelector((state) => {
-    console.log('state:', state); // log the state object
+    console.log("state:", state); // log the state object
     return state.token.stoken;
   });
 
-
   const now = new Date().getTime();
-  console.log("nowww",now, localStorage.getItem("storeTime"), localStorage.getItem("expiresIn"), " \ndiff: ", (now - localStorage.getItem("storeTime")))
+  console.log(
+    "nowww",
+    now,
+    localStorage.getItem("storeTime"),
+    localStorage.getItem("expiresIn"),
+    " \ndiff: ",
+    now - localStorage.getItem("storeTime")
+  );
   const spotifyToken =
-    ((now - localStorage.getItem("storeTime")) > (localStorage.getItem("expiresIn")*1000))
+    now - localStorage.getItem("storeTime") >
+    localStorage.getItem("expiresIn") * 1000
       ? null
       : localStorage.getItem("spotifyAcessToken");
   if (spotifyToken === null) {
     localStorage.removeItem("spotifyAcessToken");
   }
-  
 
 
-  // const spotifyToken = 
-  // ? localStorage.spotifyAcessToken
-  // :null
-
-
-  const location = useLocation()
-
+  const location = useLocation();
 
   const logout = () => {
     setToken(null);
     localStorage.clear();
-    // client.resetStore()
   };
 
   const decodedToken = localStorage.queueitUserToken
@@ -69,62 +62,58 @@ const App=()=> {
 
   console.log("spotify tokenns, ", stoken);
 
-  if ( (! localStorage.queueitUserToken) ) {
+  if (!localStorage.queueitUserToken) {
     console.log("redering here no local storage");
     return (
-      
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div>
-                <LandingPage />
-                
-                {/* {spotifyToken} */}
-                {
-                spotifyToken? 
-                <AuthForm setToken={setToken} />
-               :<SpotifyLogin />
-                }
-                <PlaylistForm />
-                <Browse />
-                <Footer />
-              </div>
-            }
-          />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <LandingPage />
 
-          <Route
-            path={`/users/:userid/*`}
-            element={
-              <div>
-                <DashBoard logout={() => logout} />
-              </div>
-            }
-          />
-
-          <Route
-            path="/playlists/:playlistid"
-            element={
-              <div>
-                <LandingPage />
-                {
-                spotifyToken? 
+             
+              {spotifyToken ? (
                 <AuthForm setToken={setToken} />
-               :<SpotifyLogin />
-                }
-                <PlaylistForm />
-                <Browse />
-                <Footer />
-              </div>
-            }
-          />
-        </Routes>
-      
+              ) : (
+                <SpotifyLogin />
+              )}
+              <PlaylistForm />
+              <Browse />
+              <Footer />
+            </div>
+          }
+        />
+
+        <Route
+          path={`/users/:userid/*`}
+          element={
+            <div>
+              <DashBoard logout={() => logout} />
+            </div>
+          }
+        />
+
+        <Route
+          path="/playlists/:playlistid"
+          element={
+            <div>
+              <LandingPage />
+              {spotifyToken ? (
+                <AuthForm setToken={setToken} />
+              ) : (
+                <SpotifyLogin />
+              )}
+              <PlaylistForm />
+              <Browse />
+              <Footer />
+            </div>
+          }
+        />
+      </Routes>
     );
   }
 
-  // console.log(decodedToken)
-  // else{
 
   console.log("render elseee");
   return (
@@ -133,18 +122,16 @@ const App=()=> {
         <Route
           path="/"
           element={
-            (decodedToken && spotifyToken) ? (
+            decodedToken && spotifyToken ? (
               <Navigate replace to={`/users/${decodedToken.id}`} />
             ) : (
               <div>
                 <LandingPage />
-                {
-                spotifyToken? 
-                <AuthForm setToken={setToken}  />
-               :<SpotifyLogin />
-                }
-                {/* <PlaylistForm /> */}
-                {/* <Browse /> */}
+                {spotifyToken ? (
+                  <AuthForm setToken={setToken} />
+                ) : (
+                  <SpotifyLogin />
+                )}
                 <Footer />
               </div>
             )
@@ -156,8 +143,7 @@ const App=()=> {
           element={
             <div>
               <DashBoard logout={() => logout} spotifyToken={spotifyToken} />
-              {/* <PlaylistForm />
-              <Browse /> */}
+             
             </div>
           }
         />
@@ -166,20 +152,16 @@ const App=()=> {
           path="/playlists/:playlistid"
           element={
             <div>
-              <DashBoard logout={() => logout} spotifyToken={spotifyToken}  />
-             
+              <DashBoard logout={() => logout} spotifyToken={spotifyToken} />
             </div>
           }
         />
-
-              
       </Routes>
       <PlaylistForm className="playlistForm" />
       <Browse className="browse" />
-      </>
-   
+    </>
   );
   // }
-}
+};
 
 export default App;

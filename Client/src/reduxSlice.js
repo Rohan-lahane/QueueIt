@@ -1,15 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    stoken: '',
-    updateCount: 0,
-  };
+  stoken: "",
+  updateCount: 0,
+};
 
 const tokenSlice = createSlice({
-  name: 'spotifytoken',
+  name: "spotifytoken",
   initialState,
   reducers: {
     setStoken(state, action) {
-    // console.log("action in slice, ", action )
+      // console.log("action in slice, ", action )
       state.stoken = action.payload;
       state.updateCount += 1;
     },

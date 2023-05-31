@@ -88,13 +88,9 @@ const List = (props) => {
   const location = useLocation();
   const previousPath = location.state?.prevPath;
   const [count, setCount] = useState(-1);
-  // console.log("previous path", location);
 
-  // console.log("list props: ", props);
   const [songForm, setSongForm] = useState(false);
-  // const { loading, error, data } = useQuery(GET_PLAYLIST_BY_ID, {
-  //   variables: { var: props.id },
-  // });
+
   const [open, setOpen] = useState(false);
   const [songList, setSongList] = useState([]);
 
@@ -121,14 +117,8 @@ const List = (props) => {
     }
   }, []);
 
-  // if (loading) return <>loadinggg....</>;
-  // if (error) return <>error is : {error.message}</>;
-
   return (
     <div className={`playlist ${open ? "playlist-open" : ""}`}>
-      {/* {loading && <>loadingg</>} */}
-      {/* {error && <>error getting plalist details: {error.message}</>} */}
-      {/* {data && ( */}
       <Link
         to={
           props.close === "/"
@@ -141,11 +131,9 @@ const List = (props) => {
           onClick={() => setOpen(true)}
         >
           {props.playlist.title}
-          {count}
         </div>
       </Link>
-      {/* )} */}
-      {/* {data && ( */}
+
       <div>
         {open ? (
           <div>
@@ -153,9 +141,8 @@ const List = (props) => {
               <button
                 className="playlist-close-button"
                 onClick={() => {
-                  setCount(-1)
+                  setCount(-1);
                   setOpen(false);
-                 
                 }}
               >
                 Close
@@ -168,6 +155,7 @@ const List = (props) => {
                 <div>
                   <button onClick={() => setCount(-1)}>Stop</button>{" "}
                   <button onClick={() => setCount(count + 1)}>next</button>
+                  <button onClick={() => setCount(count - 1)}>Prev</button>
                 </div>
               )
             ) : (
@@ -220,8 +208,6 @@ const List = (props) => {
           </Link>
         )}
       </div>
-
-      {/* )} */}
     </div>
   );
 };

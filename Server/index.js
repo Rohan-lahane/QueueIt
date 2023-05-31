@@ -14,8 +14,11 @@ const express = require("express");
 const app = express()
 const bodyParser = require("body-parser");
 const cors = require("cors");
+
 app.use(cors())
 app.use(bodyParser.json())
+app.use(express.static('dist'))
+
 const spotifyWebApi = require('spotify-web-api-node')
 
 
@@ -160,7 +163,7 @@ const start = async () => {
     })
   );
 
-  const PORT = 4000;
+  const PORT = process.env.Port || 4000;
 
   httpServer.listen(PORT, () =>
     console.log(`Server is now running on http://localhost:${PORT}`)
