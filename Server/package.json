@@ -6,6 +6,7 @@
   "scripts": {
     "test": "test",
     "dev": "NODE_ENV=development nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
     "build:ui": "rm -rf dist && cd ../Client && npm run build && cp -r dist ../Server",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
