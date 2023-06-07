@@ -125,7 +125,6 @@ export const ADD_SONG = gql`
       platform: $platform
     ) {
       title
-      creator
       songs {
         title
         link

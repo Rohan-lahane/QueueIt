@@ -99,6 +99,7 @@ const List = (props) => {
     : null;
 
   console.log("spotify token in list", spotifyToken);
+  console.log("playlist info : ", props)
 
   const updateSongs = (songs) => {
     console.log("setting new song list : ", songs);
@@ -182,9 +183,9 @@ const List = (props) => {
             <div>
               {songForm ? (
                 <>
-                  <button onClick={() => setSongForm(false)}>cancel</button>
+                  <button onClick={() => setSongForm(false)}>cancell</button>
                   <AddSongForm
-                    addTo={props.id}
+                    addTo={props.playlist.id}
                     updateSongForm={() => updateSongForm()}
                     updateSongList={(songs) => updateSongs(songs)}
                     songlist={songList}
