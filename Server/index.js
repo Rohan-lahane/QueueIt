@@ -17,7 +17,7 @@ const cors = require("cors");
 
 app.use(cors())
 app.use(bodyParser.json())
-app.use(express.static('dist'))
+// app.use(express.static('dist'))
 
 const spotifyWebApi = require('spotify-web-api-node')
 

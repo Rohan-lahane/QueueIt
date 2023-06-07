@@ -49,7 +49,7 @@ const resolvers = {
 
       console.log("logged in user context", context);
       const user = await User.findById(args.id).populate("playlists");
-      console.log("found user: ", user);
+      console.log("found user: ", user.username, user.id);
       return user;
       // users.find(p => p.name === args.name)
     },
